@@ -23,6 +23,19 @@ int main(void) {
 
 	return EXIT_SUCCESS;
 #else
+	std::array<char, 128> buffer;
+	std::string result;
+	std::unique_ptr<FILE, decltype(&_pclose)> pipe(_popen("ls", "r"), _pclose);
+	if (!pipe)
+	{
+		result = "";
+	}
+	while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr)
+	{
+		result += buffer.data();
+	}
+	std::wstring str(result.length(), L' ');
+	std::copy(result.begin(), result.end(), str.begin());
 	std::cout << "aaa" << std::endl;
 	return 0;
 #endif

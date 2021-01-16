@@ -4,8 +4,14 @@
 #include "ftxui/component/input.hpp"
 #include "ftxui/component/button.hpp"
 
+#include <cstdio>
+#include <codecvt>
+#include <locale>
 #include <iostream>
-#include <fstream>
+#include <memory>
+#include <stdexcept>
+#include <string>
+#include <array>
 
 using namespace ftxui;
 
@@ -23,9 +29,24 @@ public:
 		rightMenu.entries = { L"c", L"d"};
 		input.placeholder = L"input";
 		btn.label = L"ls";
+		str = L"test";
 		btn.on_click = [&](){
-
-			system("ls"); // capture stdout
+			std::array<char, 128> buffer;
+			std::string result;
+			std::unique_ptr<FILE, decltype(&_pclose)> pipe(_popen("ls", "r"), _pclose);
+			if (!pipe)
+			{
+				result = "";
+			}
+			while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr)
+			{
+				result += buffer.data();
+				//result += std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes(buffer.data());
+			}
+			//std::wstring str(result.length(), L' ');
+			str = std::wstring(10, L' ');
+			std::copy(result.begin(), result.begin()+9, str.begin());
+			//input.placeholder = str;
 		};
 	}
 
@@ -35,7 +56,7 @@ private:
 	Menu rightMenu;
 	Input input;
 	Button btn;
-
+	std::wstring str;
 
 	Element Render() override
 	{
@@ -62,7 +83,9 @@ private:
 				separator(),
 				vbox({
 					btn.Render()
-				})
+				}),
+				separator(),
+				text(str),
 			})
 		);
 	}
