@@ -18,10 +18,10 @@ project(ftxui
   VERSION 0.3.${git_version}
 )
 
-option(FTXUI_BUILD_EXAMPLES "Set to ON to build examples" ON)
+option(FTXUI_BUILD_EXAMPLES "Set to ON to build examples" OFF)
 option(FTXUI_ENABLE_INSTALL "Generate the install target" ON)
 option(FTXUI_BUILD_TESTS "Set to ON to build tests" OFF)
-option(FTXUI_BUILD_DOCS "Set to ON to build tests" ON)
+option(FTXUI_BUILD_DOCS "Set to ON to build tests" OFF)
 
 enable_testing()
 

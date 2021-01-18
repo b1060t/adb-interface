@@ -10,12 +10,12 @@
 #include "ftxui/component/screen_interactive.hpp"
 
 #include <window.hpp>
-//#include <asio.hpp>
+#include <command.hpp>
 
 using namespace ftxui;
 
 int main(void) {
-#if 1
+#if 0
 	system("clear");
 	auto screen = ScreenInteractive::FixedSize(60, 20);
 	MainWindow component;
@@ -23,20 +23,32 @@ int main(void) {
 
 	return EXIT_SUCCESS;
 #else
-	std::array<char, 128> buffer;
-	std::string result;
-	std::unique_ptr<FILE, decltype(&_pclose)> pipe(_popen("ls", "r"), _pclose);
-	if (!pipe)
+	std::cout << "Testing Delay Command:" << std::endl;
+	getchar();
+	DelayCommand dcmd(5000);
+	dcmd.execute();
+
+	std::cout << "Testing Sync Command 'ls -l':" << std::endl;
+	getchar();
+	SyncCommand scmd("ls -l");
+	scmd.execute();
+	std::cout << scmd.getOutput() << std::endl;
+	getchar();
+
+	std::cout << "Testing Async Command 'logcat':" << std::endl;
+	getchar();
+	AsyncCommand cmd(std::string("logcat"));
+	cmd.execute();
+	int i = 0;
+	while(!cmd.isDone() && i <= 10)
 	{
-		result = "";
+		std::cout << "Get trunk " << i++ << ". Length: " << cmd.getOutput().length() << ". Press 'Enter' to get next." <<std::endl;
+		getchar();
+		//std::cout << cmd.getOutput();
 	}
-	while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr)
-	{
-		result += buffer.data();
-	}
-	std::wstring str(result.length(), L' ');
-	std::copy(result.begin(), result.end(), str.begin());
-	std::cout << "aaa" << std::endl;
+	cmd.stop();
+	std::cout << endl;
+
 	return 0;
 #endif
 }

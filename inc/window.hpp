@@ -1,17 +1,14 @@
+#ifndef WINDOW_HPP
+#define WINDOW_HPP
+
 #include "ftxui/component/component.hpp"
 #include "ftxui/component/container.hpp"
 #include "ftxui/component/menu.hpp"
 #include "ftxui/component/input.hpp"
 #include "ftxui/component/button.hpp"
 
-#include <cstdio>
-#include <codecvt>
-#include <locale>
-#include <iostream>
-#include <memory>
-#include <stdexcept>
-#include <string>
-#include <array>
+#include <utils.hpp>
+#include <command.hpp>
 
 using namespace ftxui;
 
@@ -31,22 +28,9 @@ public:
 		btn.label = L"ls";
 		str = L"test";
 		btn.on_click = [&](){
-			std::array<char, 128> buffer;
-			std::string result;
-			std::unique_ptr<FILE, decltype(&_pclose)> pipe(_popen("ls", "r"), _pclose);
-			if (!pipe)
-			{
-				result = "";
-			}
-			while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr)
-			{
-				result += buffer.data();
-				//result += std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes(buffer.data());
-			}
-			//std::wstring str(result.length(), L' ');
-			str = std::wstring(10, L' ');
-			std::copy(result.begin(), result.begin()+9, str.begin());
-			//input.placeholder = str;
+			SyncCommand cmd("ls");
+			cmd.execute();
+			str = buildwstring(cmd.getOutput(), 20);
 		};
 	}
 
@@ -90,3 +74,5 @@ private:
 		);
 	}
 };
+
+#endif
