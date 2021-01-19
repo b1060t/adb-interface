@@ -9,6 +9,7 @@
 
 #include <utils.hpp>
 #include <command.hpp>
+#include <logger.hpp>
 
 using namespace ftxui;
 
@@ -16,12 +17,14 @@ class MainWindow : public Component
 {
 public:
 	MainWindow()
+		:logger(100, 13)
 	{
 		Add(&container_);
 		container_.Add(&leftMenu);
 		container_.Add(&rightMenu);
 		container_.Add(&input);
 		container_.Add(&btn);
+		container_.Add(&logger);
 		leftMenu.entries = { L"a", L"b"};
 		rightMenu.entries = { L"c", L"d"};
 		input.placeholder = L"input";
@@ -34,12 +37,18 @@ public:
 		};
 	}
 
+	void getLog(string log)
+	{
+		logger.getLog(log);
+	}
+
 private:
 	Container container_ = Container::Horizontal();
 	Menu leftMenu;
 	Menu rightMenu;
 	Input input;
 	Button btn;
+	LogDisplayer logger;
 	std::wstring str;
 
 	Element Render() override
@@ -68,8 +77,10 @@ private:
 				vbox({
 					btn.Render()
 				}),
+				//separator(),
+				//text(str),
 				separator(),
-				text(str),
+				logger.RenderLog() | flex,
 			})
 		);
 	}

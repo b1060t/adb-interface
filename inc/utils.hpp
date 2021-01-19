@@ -17,6 +17,8 @@
 #include <atomic>
 
 #include <vector>
+#include <sstream>
+#include <algorithm>
 
 #ifdef __WIN32__
 #include <windows.h>
@@ -39,6 +41,14 @@ wstring buildwstring(string str, int len)
 	wstring result(len, L' ');
 	copy(str.begin(), str.begin() + len - 1, result.begin());
 	return result;
+}
+
+vector<string> splitByToken(string input, string token)
+{
+	vector<string> rst;
+	istringstream ss(input);
+	
+	return rst;
 }
 
 #endif

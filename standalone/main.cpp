@@ -15,10 +15,26 @@
 using namespace ftxui;
 
 int main(void) {
-#if 0
+#if 1
 	system("clear");
-	auto screen = ScreenInteractive::FixedSize(60, 20);
+	auto screen = ScreenInteractive::FixedSize(100, 30);
 	MainWindow component;
+
+	thread t([&](){
+		AsyncCommand cmd(std::string("logcat"));
+		cmd.execute();
+		while(!cmd.isDone())
+		{
+			string log = cmd.getOutput();
+			if(log.length() > 0)
+			{
+				component.getLog(log);
+				screen.PostEvent(Event::Custom);
+			}
+		}
+	});
+	t.detach();
+
 	screen.Loop(&component);
 
 	return EXIT_SUCCESS;
