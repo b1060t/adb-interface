@@ -20,6 +20,7 @@ int main(void) {
 	auto screen = ScreenInteractive::FixedSize(100, 30);
 	MainWindow component;
 
+	//test only
 	thread t([&](){
 		AsyncCommand cmd(std::string("logcat"));
 		cmd.execute();
@@ -35,6 +36,7 @@ int main(void) {
 	});
 	t.detach();
 
+	screen.on_quit = screen.ExitLoopClosure();
 	screen.Loop(&component);
 
 	return EXIT_SUCCESS;

@@ -17,23 +17,19 @@ class MainWindow : public Component
 {
 public:
 	MainWindow()
-		:logger(100, 13)
+		:logger(49, 22, string("logcat")),
+		output(49, 22, string("output"))
 	{
 		Add(&container_);
-		container_.Add(&leftMenu);
-		container_.Add(&rightMenu);
 		container_.Add(&input);
-		container_.Add(&btn);
+		container_.Add(&output);
 		container_.Add(&logger);
-		leftMenu.entries = { L"a", L"b"};
-		rightMenu.entries = { L"c", L"d"};
-		input.placeholder = L"input";
-		btn.label = L"ls";
-		str = L"test";
-		btn.on_click = [&](){
-			SyncCommand cmd("ls");
+		input.placeholder = L"Command";
+		input.on_enter = [&](){
+			std::wstring str = input.content;
+			SyncCommand cmd(string(str.begin(), str.end()));
 			cmd.execute();
-			str = buildwstring(cmd.getOutput(), 20);
+			output.getLog(cmd.getOutput());
 		};
 	}
 
@@ -44,43 +40,23 @@ public:
 
 private:
 	Container container_ = Container::Horizontal();
-	Menu leftMenu;
-	Menu rightMenu;
 	Input input;
-	Button btn;
 	LogDisplayer logger;
-	std::wstring str;
+	LogDisplayer output;
 
 	Element Render() override
 	{
 		return border(
 			vbox({
 				hbox({
-					vbox({
-						hcenter(bold(text(L"一"))),
-						separator(),
-						leftMenu.Render(),
-					}) | flex,
-					separator(),
-					vbox({
-						hcenter(bold(text(L"二"))),
-						separator(),
-						rightMenu.Render(),
-					}) | flex}
-				),
+					vcenter(bold(text(L" Input: "))),
+					border(input.Render() | flex),
+				}),
 				separator(),
 				hbox({
-					center(bold(text(L" Input: "))) | flex,
-					border(input.Render() | flex)
-				}),
-				separator(),
-				vbox({
-					btn.Render()
-				}),
-				//separator(),
-				//text(str),
-				separator(),
-				logger.RenderLog() | flex,
+					output.RenderLog() | size(WIDTH, EQUAL, 49),
+					logger.RenderLog() | size(WIDTH, EQUAL, 49),
+				})
 			})
 		);
 	}

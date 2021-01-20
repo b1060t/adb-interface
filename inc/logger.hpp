@@ -13,13 +13,19 @@ private:
 	vector<string> _payload;
 	long _xoffset, _yoffset;
 	long _xlen, _ylen;
+	string _name;
 public:
-	LogDisplayer(long xlen, long ylen)
+	LogDisplayer(long xlen, long ylen, string name)
 	{
 		_xlen = xlen;
 		_ylen = ylen;
 		_xoffset = 0;
 		_yoffset = 0;
+		_name = name;
+		for(int i = 0; i < _ylen; i++)
+		{
+			_payload.push_back(string(" "));
+		}
 	}
 	void getLog(string str)
 	{
@@ -33,19 +39,16 @@ public:
 	Element RenderLog()
 	{
 		Elements list;
-		long len = _payload.size();
-		//rewrite needed!!!
 		for(long i = _payload.size() - _ylen - _yoffset; i < _payload.size() - _yoffset; i++)
 		{
-			len = _payload[i].length();
-			len = min(len, _xlen);
-			Element doc = hbox({
-				text(buildwstring(_payload[i].substr(_xoffset, len))),
-			}) | flex;
+			long len = _payload[i].length() - _xoffset;
+			Element doc = len < 0
+				? hbox({ text(L" ")}) | flex
+				: hbox({ text(buildwstring(_payload[i].substr(_xoffset, min(len, _xlen))))}) | flex;
 			list.push_back(doc);
 		}
-		if(list.empty()) list.push_back(text(L"empty"));
-		return window(text(L"test"), vbox(list) | flex);
+		if(list.empty()) list.push_back(text(L" "));
+		return window(text(buildwstring(_name)), vbox(list) | flex);
 	}
 	bool OnEvent(Event e)
 	{
