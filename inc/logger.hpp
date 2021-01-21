@@ -54,16 +54,34 @@ public:
 	{
 		if(!Focused()) return false;
 
-		if(e == Event::ArrowUp) _yoffset++;
-		if(e == Event::ArrowDown) _yoffset--;
-		if(e == Event::ArrowRight) _xoffset++;
-		if(e == Event::ArrowLeft) _xoffset--;
+		if (ActiveChild() && ActiveChild()->OnEvent(e)) return true;
+
+		bool _changed = false;
+		if(e == Event::Character('w'))
+		{
+			_yoffset++;
+			_changed = true;
+		}
+		if(e == Event::Character('s'))
+		{
+			_yoffset--;
+			_changed = true;
+		}
+		if(e == Event::Character('d'))
+		{
+			_xoffset++;
+			_changed = true;
+		}
+		if(e == Event::Character('a')){
+			_xoffset--;
+			_changed = true;
+		}
 
 		_yoffset = _yoffset < 0 ? 0 : _yoffset;
 		_yoffset = _payload.size() - _ylen - _yoffset < 0 ? _payload.size() + _ylen : _yoffset;
 		_xoffset = _xoffset < 0 ? 0 : _xoffset;
 
-		return true;
+		return _changed;
 	}
 };
 

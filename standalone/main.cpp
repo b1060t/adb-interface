@@ -36,7 +36,7 @@ int main(void) {
 	});
 	t.detach();
 
-	screen.on_quit = screen.ExitLoopClosure();
+	//screen.on_quit = screen.ExitLoopClosure();
 	screen.Loop(&component);
 
 	return EXIT_SUCCESS;
