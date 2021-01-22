@@ -47,7 +47,6 @@ public:
 				: hbox({ text(buildwstring(_payload[i].substr(_xoffset, min(len, _xlen))))}) | flex;
 			list.push_back(doc);
 		}
-		if(list.empty()) list.push_back(text(L" "));
 		return window(text(buildwstring(_name)), vbox(list) | flex);
 	}
 	bool OnEvent(Event e)

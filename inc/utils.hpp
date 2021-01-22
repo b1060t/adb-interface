@@ -43,12 +43,16 @@ wstring buildwstring(string str, int len)
 	return result;
 }
 
-vector<string> splitByToken(string input, string token)
+vector<string> splitByToken(string input, const char token)
 {
-	vector<string> rst;
+	vector<string> params;
 	istringstream ss(input);
+	for(string param; getline(ss, param, token);)
+	{
+		params.push_back(param);
+	}
 	
-	return rst;
+	return params;
 }
 
 #endif

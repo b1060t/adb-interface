@@ -20,11 +20,11 @@ int main(void) {
 	auto screen = ScreenInteractive::FixedSize(100, 30);
 	MainWindow component;
 
-	//test only
+	bool _run = true;
 	thread t([&](){
 		AsyncCommand cmd(std::string("logcat"));
 		cmd.execute();
-		while(!cmd.isDone())
+		while(!cmd.isDone() && _run)
 		{
 			string log = cmd.getOutput();
 			if(log.length() > 0)
@@ -33,11 +33,14 @@ int main(void) {
 				screen.PostEvent(Event::Custom);
 			}
 		}
+		cmd.stop();
 	});
 	t.detach();
 
-	//screen.on_quit = screen.ExitLoopClosure();
+	component.on_quit = screen.ExitLoopClosure();
 	screen.Loop(&component);
+
+	_run = false;
 
 	return EXIT_SUCCESS;
 #else

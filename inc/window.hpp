@@ -10,6 +10,7 @@
 #include <utils.hpp>
 #include <command.hpp>
 #include <logger.hpp>
+#include <extension.hpp>
 
 using namespace ftxui;
 
@@ -26,16 +27,45 @@ public:
 		container_.Add(&logger);
 		input.placeholder = L"Command";
 		input.on_enter = [&](){
-			std::wstring str = input.content;
-			SyncCommand cmd(string(str.begin(), str.end()));
-			cmd.execute();
-			output.getLog(cmd.getOutput());
+			wstring wstr = input.content;
+			string str = string(wstr.begin(), wstr.end());
+			vector<string> params = splitByToken(str, ' ');
+			function<int(LogDisplayer&, vector<string>)> func;
+			for(auto c : Reg)
+			{
+				if(params[0] == c.command)
+				{
+					func = c.function;
+					break;
+				}
+			}
+			if(func != nullptr) //costum command
+			{
+				func(output, params);
+			}
+			else //linux command
+			{
+				SyncCommand cmd(str);
+				cmd.execute();
+				output.getLog(cmd.getOutput());
+			}
 		};
 	}
 
 	void getLog(string log)
 	{
 		logger.getLog(log);
+	}
+
+	function<void()> on_quit = [](){};
+	bool OnEvent(Event e) override
+	{
+		if(e == Event::Escape)
+		{
+			on_quit();
+			return true;
+		}
+		return Component::OnEvent(e);
 	}
 
 private:
