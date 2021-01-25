@@ -11,7 +11,7 @@ add_subdirectory(external/FTXUI)
 
 include_directories(
 	external/FTXUI
-	external/asio/asio/include
+	#external/asio/asio/include
 	inc
 )
 

@@ -49,6 +49,7 @@ public:
 				cmd.execute();
 				output.getLog(cmd.getOutput());
 			}
+			input.content = L"";
 		};
 	}
 

@@ -1,5 +1,8 @@
 project(adb-interface-standalone)
 
+include_directories(inc)
+link_directories(lib)
+
 add_executable(adb_interface
 	main.cpp
 )

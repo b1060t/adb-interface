@@ -51,7 +51,6 @@ vector<string> splitByToken(string input, const char token)
 	{
 		params.push_back(param);
 	}
-	
 	return params;
 }
 

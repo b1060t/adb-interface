@@ -31,7 +31,7 @@ int IspHelp(LogDisplayer& logger, vector<string> params)
 	logger.getLog("-----isp_test_help-----");
 	for(auto c : Reg)
 	{
-		logger.getLog(c.command);
+		logger.getLog(c.command + "\n   desc: " + c.description);
 	}
 	logger.getLog(" ");
 	return 0;
