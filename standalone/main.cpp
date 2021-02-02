@@ -11,6 +11,7 @@
 
 #include <window.hpp>
 #include <command.hpp>
+#include <socket.hpp>
 
 using namespace ftxui;
 

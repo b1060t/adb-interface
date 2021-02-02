@@ -59,7 +59,7 @@ class AsyncCommand : public Command
 {
 private:
 	thread _thread;
-	bool _stop;
+	atomic<bool> _stop;
 	mutex _outputLock;
 	virtual void run() override
 	{
